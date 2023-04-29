@@ -14,6 +14,7 @@ async fn main() -> Result<(), Error> {
         .init()
         .unwrap();
 
+    /* handler_fn is deprecated, but we're not going to worry about that right this moment */
     let func = handler_fn(my_handler);
     lambda_runtime::run(func).await?;
     Ok(())
@@ -25,6 +26,7 @@ pub(crate) async fn my_handler(
 ) -> Result<ApiGatewayProxyResponse, Error> {
     let path = event.path.unwrap();
 
+    /* the rand crate is pretty heavy-duty. We don't need the overhead of a cryptographically-secure RNG here, so SmallRNG will do. */
     let mut rng = SmallRng::from_entropy();
     let dice = rng.gen_range(1..=10);
 

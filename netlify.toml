@@ -23,3 +23,11 @@
 
 	[plugins.inputs]
 		output_path = "reports/lighthouse/index.html"
+
+[context.dev.environment]
+    HOST = "http://localhost:8888"
+
+
+[dev]
+    command = "eleventy --serve"
+    port = 8888

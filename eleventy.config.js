@@ -95,8 +95,10 @@ module.exports = function (eleventyConfig) {
 	});
 
 	eleventyConfig.addShortcode("rollDice", async function (size, number) {
+		const url = `${process.env.HOST || ''}/.netlify/functions/dice`;
+		console.log(url);
 		try {
-			const response = await axios.get('http://localhost:8888/.netlify/functions/dice', {
+			const response = await axios.get(url, {
 			});
 			console.log(response);
 			return response.data;
