@@ -26,6 +26,8 @@ pub(crate) async fn my_handler(
 ) -> Result<ApiGatewayProxyResponse, Error> {
     let path = event.path.unwrap();
 
+    let params = event.query_string_parameters;
+
     /* the rand crate is pretty heavy-duty. We don't need the overhead of a cryptographically-secure RNG here, so SmallRNG will do. */
     let mut rng = SmallRng::from_entropy();
     let dice = rng.gen_range(1..=10);
@@ -35,7 +37,8 @@ pub(crate) async fn my_handler(
         headers: HeaderMap::new(),
         multi_value_headers: HeaderMap::new(),
         body: Some(Body::Text(format!(
-            "<div>Hello from {path}. Your roll is {dice}</div>"
+            "<div>Hello from {path}. Your roll is {dice} and your query is {:#?}</div>",
+            params
         ))),
         is_base64_encoded: Some(false),
     };
