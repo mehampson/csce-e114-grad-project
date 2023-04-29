@@ -94,20 +94,6 @@ module.exports = function (eleventyConfig) {
 		});
 	});
 
-	eleventyConfig.addShortcode("rollDice", async function (size, number) {
-		const url = `${process.env.HOST || ''}/.netlify/functions/dice`;
-		console.log(url);
-		try {
-			const response = await axios.get(url, {
-			});
-			console.log(response);
-			return response.data;
-		} catch (error) {
-			console.error(error);
-			return 'Bad roll';
-		}
-	});
-
 	// Features to make your build faster (when you need them)
 
 	// If your passthrough copy gets heavy and cumbersome, add this line
