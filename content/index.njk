@@ -17,3 +17,5 @@ eleventyNavigation:
 10. Add `functions = "netlify/functions"` to netlify.toml
 11. The template function we just installed has some pretty out-of-date dependencies. Go to Cargo.toml, and check for current versions of the crates on https://docs.rs. (Be mindful of breaking changes.)
 12. Run `netlify dev`, and then check out http://localhost:8888/.netlify/functions/dice -- we get a response!
+13. Add a custom short code to eleventy.config.js to call the function: rollDice
+
