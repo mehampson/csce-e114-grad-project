@@ -13,5 +13,7 @@ eleventyNavigation:
 6. Run: `netlify functions:create --language=rust`. 
 7. Set it up as a Serverless function
 8. Default path is fine
-9. Now you have some new files in `netlify/functions`. Be sure to run `git add` at this point to track your function's files.
-10. 
+9. Now you have some new files in `netlify/functions`. Be sure to run `git add` at this point to track your function's files. You can find some appropriate gitignore rules at: https://github.com/github/gitignore/blob/main/Rust.gitignore
+10. Add `functions = "netlify/functions"` to netlify.toml
+11. The template function we just installed has some pretty out-of-date dependencies. Go to Cargo.toml, and check for current versions of the crates on https://docs.rs. (Be mindful of breaking changes.)
+12. Run `netlify dev`, and then check out http://localhost:8888/.netlify/functions/dice -- we get a response!
