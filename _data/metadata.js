@@ -1,11 +1,11 @@
 module.exports = {
-	title: "Eleventy Base Blog v8",
+	title: "Going Beyond JS With Serverless",
 	url: "https://example.com/",
 	language: "en",
-	description: "I am writing about my experiences as a naval navel-gazer.",
+	description: "My grad project for CSCI E-114 shows you how to use a non-Javascript serverless function with Netlify.",
 	author: {
-		name: "Your Name Here",
-		email: "youremailaddress@example.com",
-		url: "https://example.com/about-me/"
+		name: "Michael Hampson",
+		email: "michael_hampson@harvard.edu",
+		url: ""
 	}
 }
