@@ -5,17 +5,27 @@ eleventyNavigation:
   order: 1
 ---
 
-1. Clone the Eleventy starter of your choice. I used https://github.com/11ty/eleventy-base-blog. Trim out anything you don't plan to use.
-2. Add a new site on Netlify, and link your repo to it. Then run `netlify init`
-3. We're going to use Rust for our serverless function. See https://www.netlify.com/blog/2021/10/14/write-netlify-functions-in-rust/
-4. Make sure Rust is installed: https://www.rust-lang.org/tools/install
-5. Rust functions on Netlify are still experimental, so run: `netlify env:set NETLIFY_EXPERIMENTAL_BUILD_RUST_SOURCE true`
-6. Run: `netlify functions:create --language=rust`. 
-7. Set it up as a Serverless function
-8. Default path is fine
-9. Now you have some new files in `netlify/functions`. Be sure to run `git add` at this point to track your function's files. You can find some appropriate gitignore rules at: https://github.com/github/gitignore/blob/main/Rust.gitignore
-10. Add `functions = "netlify/functions"` to netlify.toml
-11. The template function we just installed has some pretty out-of-date dependencies. Go to Cargo.toml, and check for current versions of the crates on https://docs.rs. (Be mindful of breaking changes.)
-12. Run `netlify dev`, and then check out http://localhost:8888/.netlify/functions/dice -- we get a response!
-13. Add a custom short code to eleventy.config.js to call the function: rollDice
+<ol>
+<li>Clone the Eleventy starter of your choice. I used https://github.com/11ty/eleventy-base-blog. Trim out anything you don't plan to use.</li>
+<li>Add a new site on Netlify, and link your repo to it. Then run `netlify init`</li>
+<li>We're going to use Rust for our serverless function. See https://www.netlify.com/blog/2021/10/14/write-netlify-functions-in-rust/</li>
+<li>Make sure Rust is installed: https://www.rust-lang.org/tools/install</li>
+<li>Rust functions on Netlify are still experimental, so run: `netlify env:set NETLIFY_EXPERIMENTAL_BUILD_RUST_SOURCE true`</li>
+<li>Run: `netlify functions:create --language=rust`. </li>
+<li>Set it up as a Serverless function</li>
+<li>Default path is fine</li>
+<li>Now you have some new files in `netlify/functions`. Be sure to run `git add` at this point to track your function's files. You can find some appropriate gitignore rules at: https://github.com/github/gitignore/blob/main/Rust.gitignore</li>
+<li>Add `functions = "netlify/functions"` to netlify.toml</li>
+<li>The template function we just installed has some pretty out-of-date dependencies. Go to Cargo.toml, and check for current versions of the crates on https://docs.rs. (Be mindful of breaking changes.)</li>
+<li>Run `netlify dev`, and then check out http://localhost:8888/.netlify/functions/dice -- we get a response!</li>
+<li>Add a custom short code to eleventy.config.js to call the function: rollDice</li>
+</ol>
 
+<button class='btn' hx-get="/.netlify/functions/dice" 
+					hx-target="#replaceMe" 
+					hx-swap="beforeend">
+		Roll!
+</button>
+
+<div id="replaceMe">
+</div> 

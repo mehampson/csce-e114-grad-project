@@ -35,7 +35,7 @@ pub(crate) async fn my_handler(
         headers: HeaderMap::new(),
         multi_value_headers: HeaderMap::new(),
         body: Some(Body::Text(format!(
-            "Hello from {path}. Your roll is {dice}"
+            "<div>Hello from {path}. Your roll is {dice}</div>"
         ))),
         is_base64_encoded: Some(false),
     };
