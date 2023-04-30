@@ -4,7 +4,6 @@ use lambda_http::{
 };
 use rand::rngs::SmallRng;
 use rand::{Rng, SeedableRng};
-use serde_json::json;
 use std::str::FromStr;
 
 #[tokio::main]
@@ -22,7 +21,6 @@ pub async fn roll_dice(event: Request) -> Result<impl IntoResponse, Error> {
     /* These variables will go into the response we construct at the end, once we know what their values are */
     let status: StatusCode;
     let message: String;
-    let mut rolls: Vec<u8> = Vec::new();
 
     /* If you're not familiar with Rust, some of the operations from here may seem odd.
      * Without getting too deep into the weeds, Rust has no null value.
@@ -37,7 +35,7 @@ pub async fn roll_dice(event: Request) -> Result<impl IntoResponse, Error> {
     if let Some(params) = event.query_string_parameters_ref() {
         /* The paramaters are a specialized map type, which has a method which will give us
          * the first value of any given param key in (as usual) another Option.
-         * Here, we'll use unwrap_or() to extract the value or use '1' as a default.
+         * Here, we'll use unwrap_or() to extract the value or use '1' as a default if it's None.
          * We'll convert the result of that to an 8-bit unsigned int at the same time. */
         let count = u8::from_str(params.first("count").unwrap_or("1"))?;
 
@@ -59,12 +57,15 @@ pub async fn roll_dice(event: Request) -> Result<impl IntoResponse, Error> {
         /* the rand crate is pretty heavy-duty. We don't need the overhead of a cryptographically-secure RNG here, so SmallRNG will do. */
         let mut rng = SmallRng::from_entropy();
 
+        /* A vector to collect our rolls */
+        let mut rolls: Vec<u8> = Vec::new();
+
         for _ in 0..count {
             rolls.push(rng.gen_range(1..=sides));
         }
 
         let sum: u8 = rolls.iter().sum();
-        message = format!("You rolled {}", sum);
+        message = format!("You rolled {}d{}: {:?} = {}", count, sides, rolls, sum);
 
         status = StatusCode::OK;
     } else {
@@ -74,17 +75,11 @@ pub async fn roll_dice(event: Request) -> Result<impl IntoResponse, Error> {
         message = "There was a problem with your dice.".to_string();
     }
 
-    /* Now we build our HTTP response. */
+    /* Now we build our HTTP response. We'll just send back an HTML fragment. */
     let response = Response::builder()
         .status(status)
-        .header("Content-Type", "application/json")
-        .body(
-            json!({
-              "message": message,
-              "rolls": rolls
-            })
-            .to_string(),
-        )
+        .header("Content-Type", "text/html")
+        .body(format!("<li>{message}</li>"))
         .map_err(Box::new)?;
 
     /* This whole function actually returns a Result, which is a lot like an Option except for fallible things rather than optional.
