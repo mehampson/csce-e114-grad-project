@@ -9,8 +9,11 @@ import (
 	"time"
 )
 
+/* As an FYI, I've never written Go before today and absolutely do not assert this function is well-written. */
+
 func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	/* Parse the query strings. We'll need to convert them both from strings to ints, and can handle `count`` in place. */
+	/* Parse the query strings. 
+	 * We'll need to convert them both from strings to ints, and can handle `count`` in place. */
 	count, count_err := strconv.Atoi(request.QueryStringParameters["count"])
 	s := request.QueryStringParameters["sides"]
 
@@ -34,20 +37,20 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
 		sides = 20
 	default:
 		// We're actually going to treat this as an error in a moment
-		sides = 0
+		sides = -1
 	}
 
 	/* Our rule is the query strings have to be castable to ints. If we couldn't, return a 400. */
-	if sides == 0 || count_err != nil {
+	if sides == -1 || count_err != nil {
 		return &events.APIGatewayProxyResponse{
 			StatusCode: 400,
 			Body:       "Invalid dice roll request",
 		}, nil
 	} else {
 		/* Okay, we know how to interpret this request. Let's roll our dice. */
-		
+
 		// Initialize the RNG
-		rand.Seed(time.Now().UnixNano())
+		rand.New(rand.NewSource(time.Now().UnixNano()))
 
 		var rolls []int
 		var sum int
@@ -60,7 +63,7 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
 
 		return &events.APIGatewayProxyResponse{
 			StatusCode: 200,
-			Body:       fmt.Sprintf("You rolled %dd%d: %v = %d", count, sides, rolls, sum),
+			Body:       fmt.Sprintf("<li class='go-rolls has-text-primary-dark'>[Go] You rolled %dd%d: %v = %d</li>", count, sides, rolls, sum),
 		}, nil
 	}
 

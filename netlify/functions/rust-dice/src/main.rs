@@ -36,7 +36,7 @@ pub async fn roll_dice(event: Request) -> Result<impl IntoResponse, Error> {
         /* The paramaters are a specialized map type, which has a method which will give us
          * the first value of any given param key in (as usual) another Option.
          * Here, we'll use unwrap_or() to extract the value or use '1' as a default if it's None.
-         * We'll convert the result of that to an 8-bit unsigned int at the same time. */
+         * We'll convert the result of that to an unsigned 8-bit int at the same time. */
         let count = u8::from_str(params.first("count").unwrap_or("1"))?;
 
         /* We know the finite options to expect from `sides`, so we'll do some pattern matching
@@ -65,7 +65,7 @@ pub async fn roll_dice(event: Request) -> Result<impl IntoResponse, Error> {
         }
 
         let sum: u8 = rolls.iter().sum();
-        message = format!("You rolled {}d{}: {:?} = {}", count, sides, rolls, sum);
+        message = format!("[Rust] You rolled {}d{}: {:?} = {}", count, sides, rolls, sum);
 
         status = StatusCode::OK;
     } else {
@@ -79,11 +79,11 @@ pub async fn roll_dice(event: Request) -> Result<impl IntoResponse, Error> {
     let response = Response::builder()
         .status(status)
         .header("Content-Type", "text/html")
-        .body(format!("<li>{message}</li>"))
+        .body(format!("<li class='rust-rolls has-text-link-dark'>{message}</li>"))
         .map_err(Box::new)?;
 
-    /* This whole function actually returns a Result, which is a lot like an Option except for fallible things rather than optional.
-     * Instead of Some(thing) and None, we have Ok(thing) and Error(err).
+    /* This whole function actually needs to return a Result, which is a lot like an Option except for fallible things rather than optional.
+     * So we wrap our response in an Ok(). Any code paths that 
      * Anywhere you saw a ? earlier in the function was a Result being either unwrapped if Ok or returned early as the Error. */
     Ok(response)
 }

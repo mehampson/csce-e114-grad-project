@@ -5,40 +5,58 @@ eleventyNavigation:
   order: 1
 ---
 
-<!-- We're using HTMX to insert new rolls into the DOM, mainly because it's pretty quick to just drop in and we don't need anything fancier.
+<div class="columns">
+	<!-- We're using HTMX to insert new rolls into the DOM, mainly because it's pretty quick to just drop in and we don't need anything fancier.
      Basically, we just set up our input fields, and label the Submit button with some HTMX paramaters to make the get request to our function.
 	 Then the button will load the results into the element identified by hx-target, with the behavior specified in hx-swap. -->
-<div>
-	<div id='params'>
-		<!-- How many dice are we rolling at once? -->
-		<label for="count">How many dice?</label>
-		<input type="number" id="count" name="count" required
-		minlength="1" max="20" value="1">
+<div class="column is-two-thirds">
+	<div id='params' class='box'>
+		<div class="field">
+			<!-- How many dice are we rolling at once? -->
+			<label for="count" class="label">How many dice?</label>
+			<input type="number" id="count" name="count" required minlength="1" max="20" value="1">
+		</div>
 
-		<!-- Users can choose from the typical assortment of nerdy polyhedrals -->
-		<label for="sides-select">How many sides?</label>
-		<select name="sides" id="sides-select">
-			<option value="d2">d2</option>
-			<option value="d4">d4</option>
-			<option value="d6" selected>d6</option>
-			<option value="d8">d8</option>
-			<option value="d10">d10</option>
-			<option value="d12">d12</option>
-			<option value="d20">d20</option>
-		</select>
+		<div class="field">
+			<!-- Users can choose from the typical assortment of nerdy polyhedrals -->
+			<label for="sides-select" class="label">How many sides?</label>
+			<select name="sides" id="sides-select" class="field select">
+				<option value="d2">d2</option>
+				<option value="d4">d4</option>
+				<option value="d6" selected>d6</option>
+				<option value="d8">d8</option>
+				<option value="d10">d10</option>
+				<option value="d12">d12</option>
+				<option value="d20">d20</option>
+			</select>
+		</div>
 
-		<button class='btn' 
+		<button class='button is-link' 
 			hx-get="/.netlify/functions/rust-dice"
 			hx-include="[name='count'], [name='sides']"
 			hx-target="#rolls" 
 			hx-swap="beforeend">
-			Roll!
+			Roll with Rust!
 		</button>
+
+		<button class='button is-primary' 
+			hx-get="/.netlify/functions/go-dice"
+			hx-include="[name='count'], [name='sides']"
+			hx-target="#rolls" 
+			hx-swap="beforeend">
+			Roll with Go!
+		</button>
+
 	</div>
 
 
 	<!-- As we get new results from our function, they'll be loaded into this div. 
 		The 'beforeend' swap rule means they'll be appended after the last child element. -->
-	<div id="rolls">
-	</div> 
+	<ul id="rolls" class="container">
+	</ul> 
 </div>
+
+</div>
+
+
+
