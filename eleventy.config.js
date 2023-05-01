@@ -1,6 +1,6 @@
 const { DateTime } = require("luxon");
 const markdownItAnchor = require("markdown-it-anchor");
-const axios = require('axios').default;
+const eleventyNavigationPlugin = require("@11ty/eleventy-navigation");
 
 const pluginRss = require("@11ty/eleventy-plugin-rss");
 const pluginSyntaxHighlight = require("@11ty/eleventy-plugin-syntaxhighlight");
@@ -79,6 +79,8 @@ module.exports = function (eleventyConfig) {
 	eleventyConfig.addFilter("filterTagList", function filterTagList(tags) {
 		return (tags || []).filter(tag => ["all", "nav", "post", "posts"].indexOf(tag) === -1);
 	});
+
+	eleventyConfig.addPlugin(eleventyNavigationPlugin);
 
 	// Customize Markdown library settings:
 	eleventyConfig.amendLibrary("md", mdLib => {

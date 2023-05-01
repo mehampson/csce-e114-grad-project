@@ -5,22 +5,6 @@ eleventyNavigation:
   order: 1
 ---
 
-<ol>
-<li>Clone the Eleventy starter of your choice. I used https://github.com/11ty/eleventy-base-blog. Trim out anything you don't plan to use.</li>
-<li>Add a new site on Netlify, and link your repo to it. Then run `netlify init`</li>
-<li>We're going to use Rust for our serverless function. See https://www.netlify.com/blog/2021/10/14/write-netlify-functions-in-rust/</li>
-<li>Make sure Rust is installed: https://www.rust-lang.org/tools/install</li>
-<li>Rust functions on Netlify are still experimental, so run: `netlify env:set NETLIFY_EXPERIMENTAL_BUILD_RUST_SOURCE true`</li>
-<li>Run: `netlify functions:create --language=rust`. </li>
-<li>Set it up as a Serverless function</li>
-<li>Default path is fine</li>
-<li>Now you have some new files in `netlify/functions`. Be sure to run `git add` at this point to track your function's files. You can find some appropriate gitignore rules at: https://github.com/github/gitignore/blob/main/Rust.gitignore</li>
-<li>Add `functions = "netlify/functions"` to netlify.toml</li>
-<li>The template function we just installed has some pretty out-of-date dependencies. Go to Cargo.toml, and check for current versions of the crates on https://docs.rs. (Be mindful of breaking changes.)</li>
-<li>Run `netlify dev`, and then check out http://localhost:8888/.netlify/functions/dice -- we get a response!</li>
-<li>Add a custom short code to eleventy.config.js to call the function: rollDice</li>
-</ol>
-
 <!-- We're using HTMX to insert new rolls into the DOM, mainly because it's pretty quick to just drop in and we don't need anything fancier.
      Basically, we just set up our input fields, and label the Submit button with some HTMX paramaters to make the get request to our function.
 	 Then the button will load the results into the element identified by hx-target, with the behavior specified in hx-swap. -->
