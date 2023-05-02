@@ -11,8 +11,12 @@ const { EleventyHtmlBasePlugin } = require("@11ty/eleventy");
 const pluginDrafts = require("./eleventy.config.drafts.js");
 const pluginImages = require("./eleventy.config.images.js");
 
+const syntaxHighlight = require("@11ty/eleventy-plugin-syntaxhighlight");
+
 
 module.exports = function (eleventyConfig) {
+	eleventyConfig.addPlugin(syntaxHighlight);
+
 	// Copy the contents of the `public` folder to the output folder
 	// For example, `./public/css/` ends up in `_site/css/`
 	eleventyConfig.addPassthroughCopy({
