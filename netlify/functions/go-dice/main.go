@@ -52,17 +52,21 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
 		// Initialize the RNG
 		rand.New(rand.NewSource(time.Now().UnixNano()))
 
+		/* A slice to collect our rolls */
 		var rolls []int
 		var sum int
 
+		/* Roll our dice and track the sum along the way */
 		for i := 0; i < count; i++ {
 			roll := rand.Intn(sides) + 1
 			rolls = append(rolls, roll)
 			sum += roll
 		}
 
+		/* We're returning an HTML fragment here, and we'll insert it on the page with HTMX */
 		return &events.APIGatewayProxyResponse{
 			StatusCode: 200,
+			Headers: map[string]string{"Content-Type": "text/html"},
 			Body:       fmt.Sprintf("<li class='go-rolls has-text-primary-dark'>[Go] You rolled %dd%d: %v = %d</li>", count, sides, rolls, sum),
 		}, nil
 	}

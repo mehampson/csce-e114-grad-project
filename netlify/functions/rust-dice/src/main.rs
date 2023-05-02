@@ -76,12 +76,12 @@ pub async fn roll_dice(event: Request) -> Result<impl IntoResponse, Error> {
         /* If we get here, it means our request had no query parameters at all. 
          * We'll treat that as a 400 error.
          * And yes, we're happy if the request is ?bob=hi I guess. 
-         * In real-life we'd handle these cases more consistently. */
+         * In real-life we'd handle this more consistently. */
         status = StatusCode::BAD_REQUEST;
         message = "There was a problem with your dice.".to_string();
     }
 
-    /* Now we build our HTTP response. We'll just send back an HTML fragment. */
+    /* Now we build our HTTP response. We'll just send back an HTML fragment and insert it on the page with HTMX. */
     let response = Response::builder()
         .status(status)
         .header("Content-Type", "text/html")
@@ -90,7 +90,7 @@ pub async fn roll_dice(event: Request) -> Result<impl IntoResponse, Error> {
 
     /* This whole function doesn't actually return a response directly. Fallible things return a Result, 
      * which is a lot like how we use Option for optional things. So we wrap the result in a Result::Ok().
-     * If we encountered a problem earlier in our code path, we'd return Error(err) -- the ? we used when 
+     * If we encountered a problem earlier in our code path, we'd return Result::Err(error) -- the ? we used when 
      * unwrapping `count` earlier is actually a shortcut for that. */
     Ok(response)
 }
