@@ -6,6 +6,8 @@ eleventyNavigation:
   order: 6
 ---
 
+## Rust Source Code
+
 ```rust
 use lambda_http::{
     http::{Response, StatusCode},
