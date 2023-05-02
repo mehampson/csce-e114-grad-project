@@ -1,3 +1,12 @@
+---
+layout: layouts/base.njk
+tags: project
+eleventyNavigation:
+  key: Rust
+  order: 6
+---
+
+```rust
 use lambda_http::{
     http::{Response, StatusCode},
     run, service_fn, Error, IntoResponse, Request, RequestExt,
@@ -6,8 +15,6 @@ use rand::rngs::SmallRng;
 use rand::{Rng, SeedableRng};
 use std::str::FromStr;
 
-/* AWS Lambda requires this function to be async, even though our logic doesn't.
- * We're using tokio for that, a popular async runtime. */
 #[tokio::main]
 async fn main() -> Result<(), Error> {
     tracing_subscriber::fmt() // This is a logging/diagnostic tool
@@ -16,7 +23,7 @@ async fn main() -> Result<(), Error> {
         .with_max_level(tracing_subscriber::filter::LevelFilter::INFO)
         .init();
 
-    run(service_fn(roll_dice)).await // Here's our handler function
+    run(service_fn(roll_dice)).await // Here's where we do our logic
 }
 
 pub async fn roll_dice(event: Request) -> Result<impl IntoResponse, Error> {
@@ -38,9 +45,8 @@ pub async fn roll_dice(event: Request) -> Result<impl IntoResponse, Error> {
         /* The paramaters are a specialized map type, which has a method which will give us
          * the first value of any given param key in (as usual) another Option.
          * Here, we'll use unwrap_or() to extract the value or use '1' as a default if it's None.
-         * We'll convert the result of that to an unsigned 8-bit int at the same time.
-         * The ? is form of error-handling, in case the string we unwrap isn't castable to u8 */
-        let count:u8 = u8::from_str(params.first("count").unwrap_or("1"))?;
+         * We'll convert the result of that to an unsigned 8-bit int at the same time. */
+        let count = u8::from_str(params.first("count").unwrap_or("1"))?;
 
         /* We know the finite options to expect from `sides`, so we'll do some pattern matching
          * to convert that to a u8 as well. */
@@ -52,7 +58,7 @@ pub async fn roll_dice(event: Request) -> Result<impl IntoResponse, Error> {
             Some("d10") => 10,
             Some("d12") => 12,
             Some("d20") => 20,
-            _ => 1, // This handles anything we didn't cover above, including a None.
+            _ => 1, // This branch arm handles anything we didn't cover above, including a None
         };
 
         /* We have our dice. Now let's roll them. */
@@ -75,8 +81,8 @@ pub async fn roll_dice(event: Request) -> Result<impl IntoResponse, Error> {
     } else {
         /* If we get here, it means our request had no query parameters at all. 
          * We'll treat that as a 400 error.
-         * And yes, we're happy if the request is ?bob=hi I guess. 
-         * In real-life we'd handle these cases more consistently. */
+         * And yes, we handled default values for both `size` and `count` earlier, so we're happy 
+         * if the request is ?bob=hi I guess. */
         status = StatusCode::BAD_REQUEST;
         message = "There was a problem with your dice.".to_string();
     }
@@ -94,3 +100,4 @@ pub async fn roll_dice(event: Request) -> Result<impl IntoResponse, Error> {
      * unwrapping `count` earlier is actually a shortcut for that. */
     Ok(response)
 }
+```

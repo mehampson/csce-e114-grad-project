@@ -12,7 +12,7 @@ So let's say we've got a pretty simple Eleventy application running on Netlify, 
 
 Well, how do we do it with JavaScript? On Netlify, it's pretty simple: we just stick something in `netlify/functions`, and the name of the subdirectory or .js file determines the endpoint. The function has to export a `handler()` method, and that's what gets called when a request comes to the endpoint. Here's an example lifted directly from [Netlify's documentation]((https://docs.netlify.com/functions/build/?fn-language=js)):
 
-```
+```js
 exports.handler = async function (event, context) {
   return {
     statusCode: 200,
@@ -31,7 +31,7 @@ Setting up a Go function is actually almost exactly the same as our JavaScript f
 
 Here's Netlify's example Go function:
 
-```
+```go
 package main
 
 import (
@@ -89,15 +89,17 @@ Same as we've seen before: we define a handler function (`func()` this time inst
 
 ## Our Function 
 
-So now let's actually write our function. 
+So now we actually need our function. 
 
-If you're playing along at home, you can just copy/paste the samples from above into your project directory. Note that you'll need to add some dependencies to the Rust project for it to work. In its folder, run the command `cargo add lambda-runtime serde-json` to add those libraries to `Cargo.toml`. 
+If you're playing along at home, or your business requirements are "return a Hello message", you can just copy/paste the samples from above into your project directory. Note that you'll need to add some dependencies to the Rust project for it to work: in its folder, run the command `cargo add lambda-runtime serde-json` to add those libraries to `Cargo.toml`. 
 
 We need something with a bit more interactivity for the purposes of our demo, however, so I've built out a dice-rolling function in both languages. 
-We're all nerds here, so of course we're not going to settle for your basic standard hexahedrons -- we'll need to choose from all the expanded dice sizes seen in board games and TTRPGs, because what's the point of building it at all if we don't do that.
+We're all nerds here, so of course we're not going to settle for rolling your basic cubic hexahedrons -- we'll need to choose from all the classic polyhedrals seen in board games and TTRPGs, because what's the point of building it at all otherwise.
 
-Any discussion of how to actually write Go and Rust programs is out of scope for this project, but I've included enough comments in `netlify/functions/rust-dice/src/main.rs` to help a reader unfamiliar with Rust parse the code. The Go source code will be basically readable as-is if you know JavaScript. (In part that's because I've actually never written Go before this function, so it's definitely not too sophisticated.)
+I'm going to treat the discussion of how to actually *write* Go and Rust programs as out of scope for this project, but I've included enough comments in `netlify/functions/rust-dice/src/main.rs` to help a reader unfamiliar with Rust parse the code. The Go source code will be basically readable as-is if you know JavaScript. (In part that's because I've actually never written Go before this project, so it's not doing anything too baroque.)
 
 Once you've got a function or two ready to run, deployment couldn't be simpler: Netlify's CI/CD knows how to build both languages, so you just check the source files into your repo and commit. There's no need to bring any build artifacts or third-party libraries into your repo. But it's definitely a good idea to build your function locally first, with `go build` or `cargo build` as appropriate, to make sure they actually *are* buildable.
 
 The functions can pretty easily take information from the request context, letting us define a very simple API as we'd expect for this kind of GET request with query strings. Likewise you can construct the response however you need. With a bit more work, we can make POST requests and send multipart form data, or just act as simple middleware and tweak some headers. Through the AWS SDKs we have just as much flexibility as native JavaScript would. And once it's built, you interact with the function same as you would with any other: you call the endpoint and get a response.
+
+And that's literally all it takes. 
