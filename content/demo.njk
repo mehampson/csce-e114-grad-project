@@ -9,7 +9,39 @@ eleventyNavigation:
      Basically, we just set up our input fields, and label the Submit button with some HTMX paramaters to make the get request to our function.
 	 Then the button will load the results into the element identified by hx-target, with the behavior specified in hx-swap. -->
 <div class="column is-two-thirds">
+	<div class="content">
+		<h2>Our Function</h2> 
+		<p>So now we actually need our function.</p>
+		<p>If you're playing along at home, or your business requirements are "return a Hello message", you can just copy/paste the 
+			samples from above into your project directory. Note that you'll need to add some dependencies to the Rust project for 
+			it to work: in its folder, run the command <code>cargo add lambda-runtime serde-json</code> to add those libraries to <code>Cargo.toml</code>.</p>
+
+		<p>We need something with a bit more interactivity for the purposes of our demo, however, so I've built out a dice-rolling 
+			function in both languages.</p>
+
+		<p>We're all nerds here, so of course we're not going to settle for rolling your basic cubic hexahedrons -- we'll need to 
+			choose from all the classic polyhedrals seen in board games and TTRPGs, because what's the point of building it at all otherwise.</p>
+
+		<p>I'm not going to go into detail here about how to generally <em>write</em> Go and Rust programs, but I've included enough comments 
+			in <code>rust-dice/src/main.rs</code> to help a reader unfamiliar with Rust parse the code. The Go source code will be 
+			basically readable as-is if you know JavaScript. (Full disclosure: I know Rust, but have never written Go before this project.)</p>
+
+		<p>Once you've got a function or two ready to run, deployment couldn't be simpler: Netlify's CI/CD knows how to build both languages, 
+			so you just check the source files into your repo and commit. There's no need to bring any build artifacts or third-party libraries
+			 into your repo. But it's definitely a good idea to build your function locally first, with <code>go build</code> or <code>cargo build</code> as appropriate,
+			  to make sure they actually <em>are</em> buildable.</p>
+
+		<p>The functions can pretty easily take information from the request context, letting us define a very simple API as we'd expect for 
+			this kind of GET request with query strings. Likewise you can construct the response however you need. With a bit more work, we can 
+			make POST requests and send multipart form data, or just act as simple middleware and tweak some headers. Through the AWS SDKs we have 
+			just as much flexibility as native JavaScript would. And once it's built, you interact with the function same as you would with any other:
+			 you call the endpoint and get a response.</p>
+
+		<p>That's literally all it takes. Her's the demo, and check out the <a href="/go">Go</a> and <a href="rust">Rust</a> code too.</p>
+	</div>
+
 	<div id='params' class='box'>
+		<h4>Dice Roller 2000</h4>
 		<div class="field">
 			<!-- How many dice are we rolling at once? -->
 			<label for="count" class="label">How many dice?</label>

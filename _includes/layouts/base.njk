@@ -1,13 +1,10 @@
 ---js
 {
-navigationOptions: {
-	listClass: "navbar-menu",                // Add a class to the top level
-	listItemClass: "navbar-item",            // Add a class to every item
-	listItemHasChildrenClass: "", // Add a class if the item has children
-	activeListItemClass: "",      // Add a class to the current page’s item
-
-	anchorClass: "",              // Add a class to the anchor
-	showExcerpt: false
+	navigationOptions: {
+		listClass: "navbar-menu",
+		listItemClass: "navbar-item",
+		activeListItemClass: "is-info",
+		showExcerpt: false
 	}
 }
 ---
@@ -42,12 +39,15 @@ navigationOptions: {
 
 		<header>
 			<a href="/" class="home-link">{{ metadata.title }}</a>
-
-			{#- Read more about `eleventy-navigation` at https://www.11ty.dev/docs/plugins/navigation/ #}
-			
-			<nav class="navbar">
-				<ul class="nav navbar-menu">
-					{{ collections.all | eleventyNavigation | eleventyNavigationToHtml(navigationOptions) | safe }}
+		
+			<nav class="navbar">				
+				{% set navPages = collections.all | eleventyNavigation %}
+				<ul class="navbar-menu">
+				{%- for entry in navPages %}
+					<li class="navbar-item {% if entry.url == page.url %}is-underlined{% endif %}">
+						<a href="{{ entry.url }}">{{ entry.title }}</a>
+					</li>
+				{%- endfor %}
 				</ul>
 			</nav>
 		</header>

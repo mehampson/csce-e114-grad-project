@@ -2,8 +2,10 @@ use lambda_http::{
     http::{Response, StatusCode},
     run, service_fn, Error, IntoResponse, Request, RequestExt,
 };
-use rand::rngs::SmallRng;
-use rand::{Rng, SeedableRng};
+use rand::{
+    rngs::SmallRng,
+    Rng, SeedableRng,
+};
 use std::str::FromStr;
 
 /* AWS Lambda requires this function to be async, even though our logic doesn't.
@@ -40,7 +42,7 @@ pub async fn roll_dice(event: Request) -> Result<impl IntoResponse, Error> {
          * Here, we'll use unwrap_or() to extract the value or use '1' as a default if it's None.
          * We'll convert the result of that to an unsigned 8-bit int at the same time.
          * The ? is form of error-handling, in case the string we unwrap isn't castable to u8 */
-        let count:u8 = u8::from_str(params.first("count").unwrap_or("1"))?;
+        let count: u8 = u8::from_str(params.first("count").unwrap_or("1"))?;
 
         /* We know the finite options to expect from `sides`, so we'll do some pattern matching
          * to convert that to a u8 as well. */
@@ -69,13 +71,16 @@ pub async fn roll_dice(event: Request) -> Result<impl IntoResponse, Error> {
         }
 
         let sum: u8 = rolls.iter().sum();
-        message = format!("[Rust] You rolled {}d{}: {:?} = {}", count, sides, rolls, sum);
+        message = format!(
+            "[Rust] You rolled {}d{}: {:?} = {}",
+            count, sides, rolls, sum
+        );
 
         status = StatusCode::OK;
     } else {
-        /* If we get here, it means our request had no query parameters at all. 
+        /* If we get here, it means our request had no query parameters at all.
          * We'll treat that as a 400 error.
-         * And yes, we're happy if the request is ?bob=hi I guess. 
+         * And yes, we're happy if the request is ?bob=hi I guess.
          * In real-life we'd handle this more consistently. */
         status = StatusCode::BAD_REQUEST;
         message = "There was a problem with your dice.".to_string();
@@ -85,12 +90,14 @@ pub async fn roll_dice(event: Request) -> Result<impl IntoResponse, Error> {
     let response = Response::builder()
         .status(status)
         .header("Content-Type", "text/html")
-        .body(format!("<li class='rust-rolls has-text-link-dark'>{message}</li>"))
+        .body(format!(
+            "<li class='rust-rolls has-text-link-dark'>{message}</li>"
+        ))
         .map_err(Box::new)?;
 
-    /* This whole function doesn't actually return a response directly. Fallible things return a Result, 
+    /* This whole function doesn't actually return a response directly. Fallible things return a Result,
      * which is a lot like how we use Option for optional things. So we wrap the result in a Result::Ok().
-     * If we encountered a problem earlier in our code path, we'd return Result::Err(error) -- the ? we used when 
+     * If we encountered a problem earlier in our code path, we'd return Result::Err(error) -- the ? we used when
      * unwrapping `count` earlier is actually a shortcut for that. */
     Ok(response)
 }

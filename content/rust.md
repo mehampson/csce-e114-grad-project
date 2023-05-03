@@ -25,7 +25,7 @@ async fn main() -> Result<(), Error> {
         .with_max_level(tracing_subscriber::filter::LevelFilter::INFO)
         .init();
 
-    run(service_fn(roll_dice)).await // Here's where we do our logic
+    run(service_fn(roll_dice)).await // Here's our handler function
 }
 
 pub async fn roll_dice(event: Request) -> Result<impl IntoResponse, Error> {
@@ -33,18 +33,18 @@ pub async fn roll_dice(event: Request) -> Result<impl IntoResponse, Error> {
     let status: StatusCode;
     let message: String;
 
-    /* If you're not familiar with Rust, some of the operations from here may seem odd.
+    /* If you're not familiar with Rust, some of the operations from here may seem weird.
      * Without getting too deep into the weeds, Rust has no null value.
-     * Instead, optional things in Rust are usually wrapped in an `Option` enum,
-     * which always unwraps to either `Some(the_thing)` or `None()`.
-     * We're required by the compiler to consider both possibilities.
+     * Instead, things that aren't guaranteed to exist are usually wrapped in an `Option` enum,
+     * which always unwraps to either `Some(the thing)` or `None()`.
+     * We're required by the compiler to handle both possibilities.
      */
 
     /* Let's check our query params. The event that triggered our function has a method that
      * gives them to us as an Option. So, first things first: do we have a Some or a None?
      */
     if let Some(params) = event.query_string_parameters_ref() {
-        /* The paramaters are a specialized map type, which has a method which will give us
+        /* The parameters are a type of hashmap, and has a method which will give us
          * the first value of any given param key in (as usual) another Option.
          * Here, we'll use unwrap_or() to extract the value or use '1' as a default if it's None.
          * We'll convert the result of that to an unsigned 8-bit int at the same time. */
@@ -60,7 +60,7 @@ pub async fn roll_dice(event: Request) -> Result<impl IntoResponse, Error> {
             Some("d10") => 10,
             Some("d12") => 12,
             Some("d20") => 20,
-            _ => 1, // This branch arm handles anything we didn't cover above, including a None
+            _ => 1, // This branch arm catches anything we didn't cover above, including the None.
         };
 
         /* We have our dice. Now let's roll them. */
@@ -96,8 +96,8 @@ pub async fn roll_dice(event: Request) -> Result<impl IntoResponse, Error> {
         .body(format!("<li class='rust-rolls has-text-link-dark'>{message}</li>"))
         .map_err(Box::new)?;
 
-    /* This whole function doesn't actually return a response directly. Fallible things return a Result, 
-     * which is a lot like how we use Option for optional things. So we wrap the result in a Result::Ok().
+    /* This function doesn't actually return a response directly. Fallible things return a Result, 
+     * a lot like how we use Option for optional things. So we wrap the result in a Result::Ok().
      * If we encountered a problem earlier in our code path, we'd return Error(err) -- the ? we used when 
      * unwrapping `count` earlier is actually a shortcut for that. */
     Ok(response)

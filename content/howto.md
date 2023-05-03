@@ -62,7 +62,7 @@ Netlify's support for Rust isn't 100% fully baked yet, but it does work. Like Go
 
 Rust, like Go, is a compiled language that you'll need a full subdirectory for. You can set one up by running `cargo new <function name>` in `netlify functions`. You'll also want to add some [appropriate gitignore rules](https://github.com/github/gitignore/blob/main/Rust.gitignore) at this point, because Rust is going to add a lot of build files you don't want in your repo.
 
-It's worth mentioning that Netlify provides a starter template, so you could use that: `netlify functions:create --language=rust`. Following the wizard, you'll want to set it up as a Serverless function on the default path. The problem you'll run into here is that the template is fairly out of date, and it actually won't build as-is. If you want to use it, you'll need to edit `Cargo.toml` and update simple_logger from 1.16.0 to 4.1; the other dependencies are out of date too but not as critically. 
+It's worth mentioning that Netlify provides a starter template, so you could use that: `netlify functions:create --language=rust`. Following the wizard, you'll want to set it up as a Serverless function on the default path. The problem you'll run into here is that the template is fairly out of date, and it actually won't build as-is. If you want to use it, you'll need to edit `Cargo.toml`: change the value of `package.edition` from 2018 to 2021, and update simple_logger from 1.16.0 to 4.1. The other dependencies are out of date too but not as critically. 
 
 My advice though would be to grab the example code from the AWS SDK for Rust's [Github repo](https://github.com/awslabs/aws-lambda-rust-runtime/blob/main/README.md) for your starting point:
 
@@ -87,19 +87,4 @@ async fn func(event: LambdaEvent<Value>) -> Result<Value, Error> {
 
 Same as we've seen before: we define a handler function (`func()` this time instead of `handler()`) to do the real work of our function, which returns a very simple JSON response. We pass the handler to the AWS Lambda library, which presumably knows how to pass along the event and context data from the API request that's calling the function.
 
-## Our Function 
-
-So now we actually need our function. 
-
-If you're playing along at home, or your business requirements are "return a Hello message", you can just copy/paste the samples from above into your project directory. Note that you'll need to add some dependencies to the Rust project for it to work: in its folder, run the command `cargo add lambda-runtime serde-json` to add those libraries to `Cargo.toml`. 
-
-We need something with a bit more interactivity for the purposes of our demo, however, so I've built out a dice-rolling function in both languages. 
-We're all nerds here, so of course we're not going to settle for rolling your basic cubic hexahedrons -- we'll need to choose from all the classic polyhedrals seen in board games and TTRPGs, because what's the point of building it at all otherwise.
-
-I'm going to treat the discussion of how to actually *write* Go and Rust programs as out of scope for this project, but I've included enough comments in `netlify/functions/rust-dice/src/main.rs` to help a reader unfamiliar with Rust parse the code. The Go source code will be basically readable as-is if you know JavaScript. (In part that's because I've actually never written Go before this project, so it's not doing anything too baroque.)
-
-Once you've got a function or two ready to run, deployment couldn't be simpler: Netlify's CI/CD knows how to build both languages, so you just check the source files into your repo and commit. There's no need to bring any build artifacts or third-party libraries into your repo. But it's definitely a good idea to build your function locally first, with `go build` or `cargo build` as appropriate, to make sure they actually *are* buildable.
-
-The functions can pretty easily take information from the request context, letting us define a very simple API as we'd expect for this kind of GET request with query strings. Likewise you can construct the response however you need. With a bit more work, we can make POST requests and send multipart form data, or just act as simple middleware and tweak some headers. Through the AWS SDKs we have just as much flexibility as native JavaScript would. And once it's built, you interact with the function same as you would with any other: you call the endpoint and get a response.
-
-And that's literally all it takes. 
+Next up: [our demo function](/demo)

@@ -1,6 +1,6 @@
 module.exports = {
-	title: "Going Beyond JS With Serverless",
-	url: "https://example.com/",
+	title: "Serverless Netlify: Beyond JavaScript",
+	url: "https://helpful-salmiakki-9b1773.netlify.app/",
 	language: "en",
 	description: "My grad project for CSCI E-114 shows you how to use a non-Javascript serverless function with Netlify.",
 	author: {
